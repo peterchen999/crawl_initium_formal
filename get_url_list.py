@@ -37,14 +37,19 @@ def get_all_url(driver):
     url_list = []
     #to store all urls 
     for i in range(len(url_tag)):
-        url_list.append('https://theinitium.com' + url_tag[i].get('href'))
+        url_temp = url_tag[i].get('href')
+        if url_temp[:5] != 'https':
+            url_temp = 'https://theinitium.com' + url_temp
+        url_list.append(url_temp)
         #concatenate urls
 
     for i in range(len(url_list)):
         print(url_list[i])
 
     fout = open('url_list', 'w')
-    fout.write(str(url_list))
+    for i in range(len(url_list)):
+        fout.write(str(url_list[i]))
+        fout.write('\n')
 
 driver = boot()
 get_all_url(driver)
