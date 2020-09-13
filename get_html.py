@@ -1,0 +1,50 @@
+
+import os
+
+
+import selenium
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from time import sleep
+from bs4 import BeautifulSoup
+
+def boot():
+    profile = webdriver.FirefoxProfile() # add firefox settings
+    profile.set_preference("dom.webnotifications.enabled", False) # close firefox notifications
+    profile.update_preferences() # update firefox preferences if needed
+    driver = webdriver.Firefox(firefox_profile=profile)
+    return driver
+
+def get_all_url(driver):
+    #downloads the latest posts' url
+    driver.get('https://theinitium.com/channel/feature/')
+    moving = True
+    sleep(3)
+
+    for i in range(5):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        sleep(4) # 等待4秒鐘讓頁面讀取
+        
+        
+    first_html = driver.page_source
+    driver.close()
+
+    soup = BeautifulSoup(first_html, 'lxml')
+    #print(soup.prettify())
+
+    url_tag = soup.find_all('a', class_='u-linkUnderline')
+    #find all url tags
+    url_list = []
+    #to store all urls 
+    for i in range(len(url_tag)):
+        url_list.append('https://theinitium.com' + url_tag[i].get('href'))
+        #concatenate urls
+
+    for i in range(len(url_list)):
+        print(url_list[i])
+
+    fout = open('url_list', 'w')
+    fout.write(str(url_list))
+
+driver = boot()
+get_all_url(driver)
